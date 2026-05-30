@@ -98,6 +98,8 @@ namespace Nhom3.Application.Services
                 createUserDto.Address
             );
 
+            user.Role = createUserDto.Role;
+
             await _userRepository.AddUser(user);
 
             return MapToDto(user);
@@ -125,6 +127,9 @@ namespace Nhom3.Application.Services
 
             if (updateUserDto.DateOfBirth.HasValue)
                 user.DateOfBirth = updateUserDto.DateOfBirth.Value;
+
+            if (updateUserDto.Role.HasValue)
+                user.Role = updateUserDto.Role.Value;
 
             if (updateUserDto.Sex.HasValue)
                 user.Sex = updateUserDto.Sex.Value;

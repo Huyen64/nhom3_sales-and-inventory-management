@@ -10,6 +10,7 @@ namespace Nhom3.Application.DTOs
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
+        public User.UserRole Role { get; set; } = User.UserRole.SalesStaff;
         public User.Gender Sex { get; set; }
         public string Address { get; set; } = string.Empty;
     }
@@ -22,6 +23,7 @@ namespace Nhom3.Application.DTOs
         public string? Email { get; set; }
         public string? PasswordHash { get; set; }
         public DateTime? DateOfBirth { get; set; }
+        public User.UserRole? Role { get; set; }
         public User.Gender? Sex { get; set; }
         public string? Address { get; set; }
     }

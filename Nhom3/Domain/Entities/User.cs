@@ -15,7 +15,8 @@ namespace Nhom3.Domain.Entities
         {
             SalesStaff = 0,
             Admin = 1,
-            WarehouseKeeper = 2
+            WarehouseKeeper = 2,
+            User = 3
         }
         public UserRole Role { get; set; } = UserRole.SalesStaff;
         public enum Gender

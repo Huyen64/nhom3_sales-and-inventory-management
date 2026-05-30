@@ -13,10 +13,11 @@ namespace Nhom3.Domain.Entities
         public DateTime DateOfBirth { get; set; }
         public enum UserRole
         {
-            User = 0,
-            Admin = 1
+            SalesStaff = 0,
+            Admin = 1,
+            WarehouseKeeper = 2
         }
-        public UserRole Role { get; set; } = UserRole.User;
+        public UserRole Role { get; set; } = UserRole.SalesStaff;
         public enum Gender
         {
             [Display(Name = "Nam")]
@@ -46,7 +47,7 @@ namespace Nhom3.Domain.Entities
             DateOfBirth = dateOfBirth;
             Sex = sex;
             Address = address;
-            Role = UserRole.User;
+            Role = UserRole.SalesStaff;
             CreatedAt = DateTime.Now;
             LastModified = null;
         }

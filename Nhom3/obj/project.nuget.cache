@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lg0tmFbNryM=",
+  "dgSpecHash": "aprz5qKoFWY=",
   "success": true,
-  "projectFilePath": "/Users/minhquan/Documents/Sales-and-Inventory-Management/Nhom3/Nhom3.csproj",
+  "projectFilePath": "/Users/minhquan/Documents/nhom3_sales-and-inventory-management/Nhom3/Nhom3.csproj",
   "expectedPackageFiles": [
     "/Users/minhquan/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/Users/minhquan/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",

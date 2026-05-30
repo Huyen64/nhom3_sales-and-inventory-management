@@ -3393,11 +3393,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/minhquan/Documents/Sales-and-Inventory-Management/Nhom3/Nhom3.csproj",
+      "projectUniqueName": "/Users/minhquan/Documents/nhom3_sales-and-inventory-management/Nhom3/Nhom3.csproj",
       "projectName": "Nhom3",
-      "projectPath": "/Users/minhquan/Documents/Sales-and-Inventory-Management/Nhom3/Nhom3.csproj",
+      "projectPath": "/Users/minhquan/Documents/nhom3_sales-and-inventory-management/Nhom3/Nhom3.csproj",
       "packagesPath": "/Users/minhquan/.nuget/packages/",
-      "outputPath": "/Users/minhquan/Documents/Sales-and-Inventory-Management/Nhom3/obj/",
+      "outputPath": "/Users/minhquan/Documents/nhom3_sales-and-inventory-management/Nhom3/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/minhquan/.nuget/NuGet/NuGet.Config"

@@ -18,12 +18,12 @@ namespace Nhom3.Infrastructure.Repositories
         {
             return await _context.Users.FindAsync(id);
         }
-         public async Task<User?> GetUserByEmail(string email)      
+        public async Task<User?> GetUserByEmail(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task<User?> GetUserByUserName(string userName) 
+        public async Task<User?> GetUserByUserName(string userName)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
         }

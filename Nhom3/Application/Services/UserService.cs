@@ -62,7 +62,7 @@ namespace Nhom3.Application.Services
         // lấy user theo email
         public async Task<UserResponseDto?> GetUserByEmailAsync(string email)
         {
-            var user = await _userRepository.GetUserByEmail(email);
+            var user = await _userRepository.GetUserByEmail(NormalizeEmail(email));
             return user != null ? MapToDto(user) : null;
         }
 
@@ -78,20 +78,25 @@ namespace Nhom3.Application.Services
             if (string.IsNullOrWhiteSpace(createUserDto.PasswordHash))
                 throw new ArgumentException("Password không được để trống");
 
-            var existingByEmail = await _userRepository.GetUserByEmail(createUserDto.Email);
+            if (!Enum.IsDefined(createUserDto.Role))
+                throw new ArgumentException("Role không hợp lệ");
+
+            var normalizedEmail = NormalizeEmail(createUserDto.Email);
+            var normalizedUserName = createUserDto.UserName.Trim();
+            var existingByEmail = await _userRepository.GetUserByEmail(normalizedEmail);
             if (existingByEmail != null)
                 throw new InvalidOperationException("Email đã tồn tại");
 
-            var existingByUserName = await _userRepository.GetUserByUserName(createUserDto.UserName);
+            var existingByUserName = await _userRepository.GetUserByUserName(normalizedUserName);
             if (existingByUserName != null)
                 throw new InvalidOperationException("UserName đã tồn tại");
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(createUserDto.PasswordHash);
 
             var user = new User(
-                createUserDto.UserName,
-                createUserDto.FullName,
-                createUserDto.Email,
+                normalizedUserName,
+                createUserDto.FullName.Trim(),
+                normalizedEmail,
                 passwordHash,
                 createUserDto.DateOfBirth,
                 createUserDto.Sex,
@@ -114,13 +119,27 @@ namespace Nhom3.Application.Services
                 throw new KeyNotFoundException($"Không tìm thấy User với ID {updateUserDto.Id}");
 
             if (!string.IsNullOrWhiteSpace(updateUserDto.UserName))
-                user.UserName = updateUserDto.UserName;
+            {
+                var normalizedUserName = updateUserDto.UserName.Trim();
+                var existing = await _userRepository.GetUserByUserName(normalizedUserName);
+                if (existing is not null && existing.Id != user.Id)
+                    throw new InvalidOperationException("UserName đã tồn tại");
+
+                user.UserName = normalizedUserName;
+            }
 
             if (!string.IsNullOrWhiteSpace(updateUserDto.FullName))
-                user.FullName = updateUserDto.FullName;
+                user.FullName = updateUserDto.FullName.Trim();
 
             if (!string.IsNullOrWhiteSpace(updateUserDto.Email))
-                user.Email = updateUserDto.Email;
+            {
+                var normalizedEmail = NormalizeEmail(updateUserDto.Email);
+                var existing = await _userRepository.GetUserByEmail(normalizedEmail);
+                if (existing is not null && existing.Id != user.Id)
+                    throw new InvalidOperationException("Email đã tồn tại");
+
+                user.Email = normalizedEmail;
+            }
 
             if (!string.IsNullOrWhiteSpace(updateUserDto.PasswordHash))
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(updateUserDto.PasswordHash);
@@ -129,7 +148,12 @@ namespace Nhom3.Application.Services
                 user.DateOfBirth = updateUserDto.DateOfBirth.Value;
 
             if (updateUserDto.Role.HasValue)
+            {
+                if (!Enum.IsDefined(updateUserDto.Role.Value))
+                    throw new ArgumentException("Role không hợp lệ");
+
                 user.Role = updateUserDto.Role.Value;
+            }
 
             if (updateUserDto.Sex.HasValue)
                 user.Sex = updateUserDto.Sex.Value;
@@ -137,7 +161,7 @@ namespace Nhom3.Application.Services
             if (!string.IsNullOrWhiteSpace(updateUserDto.Address))
                 user.Address = updateUserDto.Address;
 
-            user.LastModified = DateTime.Now;
+            user.LastModified = DateTime.UtcNow;
 
             await _userRepository.UpdateUser(user);
 
@@ -155,7 +179,7 @@ namespace Nhom3.Application.Services
             await _userRepository.DeleteUser(id);
             return true;
         }
-        
+
         public async Task<LoginResponseDto> LoginUserAsync(LoginRequestDto loginRequestDto)
         {
             if (loginRequestDto == null)
@@ -167,7 +191,7 @@ namespace Nhom3.Application.Services
             if (string.IsNullOrWhiteSpace(loginRequestDto.Password))
                 throw new ArgumentException("Password không được để trống");
 
-            var user = await _userRepository.GetUserByEmail(loginRequestDto.Email);
+            var user = await _userRepository.GetUserByEmail(NormalizeEmail(loginRequestDto.Email));
 
             if (user == null)
                 throw new KeyNotFoundException($"Không tìm thấy User với Email {loginRequestDto.Email}");
@@ -369,6 +393,12 @@ namespace Nhom3.Application.Services
         }
 
         private sealed record TokenInfo(string Jti, string TokenType, DateTime ExpiresAt, int? UserId);
+
+        private static string NormalizeEmail(string email)
+        {
+            return email.Trim().ToLowerInvariant();
+        }
+
         private static UserResponseDto MapToDto(User user)
         {
             return new UserResponseDto
@@ -386,7 +416,7 @@ namespace Nhom3.Application.Services
             };
         }
 
-        
+
 
     }
 }

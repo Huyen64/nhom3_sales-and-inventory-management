@@ -15,8 +15,7 @@ namespace Nhom3.Domain.Entities
         {
             SalesStaff = 0,
             Admin = 1,
-            WarehouseKeeper = 2,
-            User = 3
+            WarehouseKeeper = 2
         }
         public UserRole Role { get; set; } = UserRole.SalesStaff;
         public enum Gender
@@ -30,14 +29,8 @@ namespace Nhom3.Domain.Entities
         }
         public Gender Sex { get; set; }
         public string Address { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? LastModified { get; set; }
-        public void DeleteUser(int userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        // Constructor
         public User(string userName, string fullName, string email, string passwordHash,
         DateTime dateOfBirth, Gender sex, string address)
         {
@@ -49,7 +42,7 @@ namespace Nhom3.Domain.Entities
             Sex = sex;
             Address = address;
             Role = UserRole.SalesStaff;
-            CreatedAt = DateTime.Now;
+            CreatedAt = DateTime.UtcNow;
             LastModified = null;
         }
         public User() { }

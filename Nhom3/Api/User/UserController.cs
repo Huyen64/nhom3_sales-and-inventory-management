@@ -20,10 +20,10 @@ namespace Nhom3.Api.User
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUsers()
         {
-             try
+            try
             {
                 var users = await _userService.GetAllUsersAsync();
                 return Ok(new { success = true, data = users });
@@ -35,7 +35,7 @@ namespace Nhom3.Api.User
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GetUserById(int id)
         {
             try
@@ -95,6 +95,7 @@ namespace Nhom3.Api.User
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
         {
             try
@@ -104,6 +105,14 @@ namespace Nhom3.Api.User
 
                 var user = await _userService.CreateUserAsync(createUserDto);
                 return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new { success = true, data = user });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { success = false, message = ex.Message });
             }
             catch (Exception ex)
             {
@@ -127,6 +136,14 @@ namespace Nhom3.Api.User
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { success = false, message = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { success = false, message = ex.Message });
             }
             catch (Exception ex)
             {

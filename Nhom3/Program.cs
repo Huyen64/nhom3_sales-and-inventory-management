@@ -11,22 +11,27 @@ using Nhom3.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = "Data Source=nhom3.db";
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5056";
+builder.WebHost.UseUrls($"http://*:{port}");
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection is missing.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString)
+    options.UseNpgsql(connectionString)
 );
 
 builder.Services.AddScoped<IUser, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<ITokenBlacklist, TokenBlacklistRepo>();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-       policy.WithOrigins("http://192.168.31.118:5173", "http://localhost:5173", "https://front-end-sales-and-inventory-management.onrender.com")
-        .AllowAnyHeader()
-        .AllowAnyMethod();
+        policy.WithOrigins("http://192.168.31.118:5173", "http://localhost:5173", "https://front-end-sales-and-inventory-management.onrender.com")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
@@ -122,41 +127,8 @@ app.UseSwaggerUI();
 
 
 app.UseCors("AllowFrontend");
-app.Use(async (context, next) =>
-{
-    if (HttpMethods.IsGet(context.Request.Method))
-    {
-        var path = context.Request.Path;
-
-        var isList = path.Equals("/api/User", StringComparison.OrdinalIgnoreCase);
-        var isById = path.StartsWithSegments("/api/User", out var remaining)
-                     && int.TryParse(remaining.Value.Trim('/'), out _);
-
-        if (isList || isById)
-        {
-            var ip = context.Connection.RemoteIpAddress?.ToString();
-            var allowed = new HashSet<string>
-            {
-                "127.0.0.1",
-                "::1",
-                "192.168.1.10" // IP máy chạy Order service
-            };
-
-            if (ip == null || !allowed.Contains(ip))
-            {
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsync("Forbidden");
-                return;
-            }
-        }
-    }
-
-    await next();
-});
 app.UseAuthentication();
 app.UseAuthorization();
-
-// app.UseHttpsRedirection();
 
 app.MapControllers();
 

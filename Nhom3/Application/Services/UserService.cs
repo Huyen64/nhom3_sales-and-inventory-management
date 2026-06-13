@@ -222,7 +222,8 @@ namespace Nhom3.Application.Services
             if (await _tokenBlacklist.IsBlacklistedAsync(jti))
                 throw new UnauthorizedAccessException("Refresh token đã bị vô hiệu");
 
-            var userIdValue = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            var userIdValue = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+                ?? principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!int.TryParse(userIdValue, out var userId))
                 throw new UnauthorizedAccessException("Refresh token không hợp lệ");
 
@@ -350,7 +351,9 @@ namespace Nhom3.Application.Services
 
                 return principal;
             }
-            catch (SecurityTokenException)
+            catch (Exception ex) when (
+                ex is SecurityTokenException
+                or ArgumentException)
             {
                 throw new UnauthorizedAccessException("Refresh token không hợp lệ");
             }

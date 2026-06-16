@@ -15,7 +15,8 @@ namespace Nhom3.Domain.Entities
         {
             SalesStaff = 0,
             Admin = 1,
-            WarehouseKeeper = 2
+            WarehouseKeeper = 2,
+            Customer = 3
         }
         public UserRole Role { get; set; } = UserRole.SalesStaff;
         public enum Gender
@@ -29,6 +30,9 @@ namespace Nhom3.Domain.Entities
         }
         public Gender Sex { get; set; }
         public string Address { get; set; } = string.Empty;
+        public int PaidOrderCount { get; set; }
+        public string CustomerTier { get; set; } = "Regular";
+        public string WorkStatus { get; set; } = "Active";
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? LastModified { get; set; }
         public User(string userName, string fullName, string email, string passwordHash,

@@ -11,6 +11,7 @@ namespace Nhom3.Infrastructure.Data
         public DbSet<BlacklistedToken> BlacklistedTokens { get; set; }
         public DbSet<OrderReport> OrderReports { get; set; }
         public DbSet<OrderReportItem> OrderReportItems { get; set; }
+        public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,6 +24,21 @@ namespace Nhom3.Infrastructure.Data
                 entity.HasIndex(u => u.Email).IsUnique();
                 entity.Property(u => u.Role).HasDefaultValue(User.UserRole.SalesStaff);
                 entity.Property(u => u.DateOfBirth).HasColumnType("date");
+                entity.Property(u => u.CustomerTier).HasDefaultValue("Regular");
+                entity.Property(u => u.WorkStatus).HasDefaultValue("Active");
+            });
+
+            modelBuilder.Entity<AttendanceRecord>(entity =>
+            {
+                entity.ToTable("AttendanceRecords");
+                entity.HasKey(value => value.Id);
+                entity.HasIndex(value => new { value.UserId, value.WorkDate }).IsUnique();
+                entity.Property(value => value.WorkDate).HasColumnType("date");
+                entity.Property(value => value.HoursWorked).HasPrecision(6, 2);
+                entity.HasOne(value => value.User)
+                    .WithMany()
+                    .HasForeignKey(value => value.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<BlacklistedToken>(entity =>

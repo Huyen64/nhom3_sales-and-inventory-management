@@ -120,6 +120,43 @@ namespace Nhom3.Api.User
             }
         }
 
+        [HttpPost("register-customer")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterCustomer([FromBody] RegisterCustomerDto registerCustomerDto)
+        {
+            try
+            {
+                if (registerCustomerDto == null)
+                    return BadRequest(new { success = false, message = "Dữ liệu không hợp lệ" });
+
+                var user = await _userService.RegisterCustomerAsync(registerCustomerDto);
+                return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new { success = true, data = user });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> Me()
+        {
+            var idValue = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                ?? User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub)?.Value;
+            if (!int.TryParse(idValue, out var userId))
+                return Unauthorized(new { success = false, message = "Token không hợp lệ" });
+
+            var user = await _userService.GetUserByIdAsync(userId);
+            return user is null
+                ? NotFound(new { success = false, message = "Không tìm thấy User" })
+                : Ok(new { success = true, data = user });
+        }
+
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto updateUserDto)

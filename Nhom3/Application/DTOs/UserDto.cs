@@ -15,6 +15,17 @@ namespace Nhom3.Application.DTOs
         public string Address { get; set; } = string.Empty;
     }
 
+    public class RegisterCustomerDto
+    {
+        public string UserName { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public DateTime DateOfBirth { get; set; }
+        public User.Gender Sex { get; set; }
+        public string Address { get; set; } = string.Empty;
+    }
+
     public class UpdateUserDto
     {
         public int Id { get; set; }
@@ -38,6 +49,10 @@ namespace Nhom3.Application.DTOs
         public DateTime DateOfBirth { get; set; }
         public User.Gender Sex { get; set; }
         public string Address { get; set; } = string.Empty;
+        public int PaidOrderCount { get; set; }
+        public string CustomerTier { get; set; } = "Regular";
+        public string CustomerTierLabel { get; set; } = "Thành viên thường";
+        public string WorkStatus { get; set; } = "Active";
         public DateTime CreatedAt { get; set; }
         public DateTime? LastModified { get; set; }
     }
@@ -67,5 +82,43 @@ namespace Nhom3.Application.DTOs
     {
         public string? RefreshToken { get; set; }
         public string? DeviceId { get; set; }
+    }
+
+    public class CustomerMembershipDto
+    {
+        public int UserId { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public int PaidOrderCount { get; set; }
+        public string Tier { get; set; } = "Regular";
+        public string TierLabel { get; set; } = "Thành viên thường";
+        public decimal DiscountPercent { get; set; }
+    }
+
+    public class PaidOrderAppliedDto
+    {
+        public string Email { get; set; } = string.Empty;
+        public int OrderId { get; set; }
+    }
+
+    public class AttendanceRecordDto
+    {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public DateTime WorkDate { get; set; }
+        public TimeSpan? CheckIn { get; set; }
+        public TimeSpan? CheckOut { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public decimal HoursWorked { get; set; }
+        public string? Note { get; set; }
+    }
+
+    public class UpsertAttendanceDto
+    {
+        public int UserId { get; set; }
+        public DateTime WorkDate { get; set; }
+        public TimeSpan? CheckIn { get; set; }
+        public TimeSpan? CheckOut { get; set; }
+        public string Status { get; set; } = "Present";
+        public string? Note { get; set; }
     }
 }

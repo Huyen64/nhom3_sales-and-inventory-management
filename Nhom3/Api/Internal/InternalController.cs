@@ -45,6 +45,31 @@ public class InternalController : ControllerBase
             : Ok(new { success = true, data = user });
     }
 
+    [HttpGet("customers/membership")]
+    public async Task<IActionResult> GetCustomerMembership([FromQuery] string email)
+    {
+        if (!HasValidApiKey())
+            return Unauthorized(new { success = false, message = "Internal API key không hợp lệ" });
+
+        if (string.IsNullOrWhiteSpace(email))
+            return BadRequest(new { success = false, message = "Email không được trống" });
+
+        var membership = await _userService.GetCustomerMembershipByEmailAsync(email);
+        return membership is null
+            ? NotFound(new { success = false, message = "Không tìm thấy Customer" })
+            : Ok(new { success = true, data = membership });
+    }
+
+    [HttpPost("customers/paid-order")]
+    public async Task<IActionResult> ApplyPaidOrder(PaidOrderAppliedDto dto)
+    {
+        if (!HasValidApiKey())
+            return Unauthorized(new { success = false, message = "Internal API key không hợp lệ" });
+
+        var membership = await _userService.ApplyPaidOrderAsync(dto);
+        return Ok(new { success = true, data = membership });
+    }
+
     [HttpPost("order-events")]
     public async Task<IActionResult> ConsumeOrderEvent(OrderEventDto orderEvent)
     {

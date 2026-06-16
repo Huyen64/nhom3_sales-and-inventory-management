@@ -110,6 +110,45 @@ namespace Nhom3.Application.Services
             return MapToDto(user);
         }
 
+        public Task<UserResponseDto> RegisterCustomerAsync(RegisterCustomerDto registerCustomerDto)
+        {
+            return CreateUserAsync(new CreateUserDto
+            {
+                UserName = registerCustomerDto.UserName,
+                FullName = registerCustomerDto.FullName,
+                Email = registerCustomerDto.Email,
+                PasswordHash = registerCustomerDto.Password,
+                DateOfBirth = registerCustomerDto.DateOfBirth,
+                Role = User.UserRole.Customer,
+                Sex = registerCustomerDto.Sex,
+                Address = registerCustomerDto.Address
+            });
+        }
+
+        public async Task<CustomerMembershipDto?> GetCustomerMembershipByEmailAsync(string email)
+        {
+            var user = await _userRepository.GetUserByEmail(NormalizeEmail(email));
+            return user is null || user.Role != User.UserRole.Customer
+                ? null
+                : MapMembership(user);
+        }
+
+        public async Task<CustomerMembershipDto?> ApplyPaidOrderAsync(PaidOrderAppliedDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                return null;
+
+            var user = await _userRepository.GetUserByEmail(NormalizeEmail(dto.Email));
+            if (user is null || user.Role != User.UserRole.Customer)
+                return null;
+
+            user.PaidOrderCount += 1;
+            user.CustomerTier = ResolveCustomerTier(user.PaidOrderCount);
+            user.LastModified = DateTime.UtcNow;
+            await _userRepository.UpdateUser(user);
+            return MapMembership(user);
+        }
+
         // Cập nhật user
         public async Task<UserResponseDto> UpdateUserAsync(UpdateUserDto updateUserDto)
         {
@@ -414,10 +453,51 @@ namespace Nhom3.Application.Services
                 DateOfBirth = user.DateOfBirth,
                 Sex = user.Sex,
                 Address = user.Address,
+                PaidOrderCount = user.PaidOrderCount,
+                CustomerTier = user.CustomerTier,
+                CustomerTierLabel = GetTierLabel(user.CustomerTier),
+                WorkStatus = user.WorkStatus,
                 CreatedAt = user.CreatedAt,
                 LastModified = user.LastModified
             };
         }
+
+        private static CustomerMembershipDto MapMembership(User user) => new()
+        {
+            UserId = user.Id,
+            Email = user.Email,
+            PaidOrderCount = user.PaidOrderCount,
+            Tier = ResolveCustomerTier(user.PaidOrderCount),
+            TierLabel = GetTierLabel(ResolveCustomerTier(user.PaidOrderCount)),
+            DiscountPercent = GetDiscountPercent(ResolveCustomerTier(user.PaidOrderCount))
+        };
+
+        private static string ResolveCustomerTier(int paidOrderCount)
+        {
+            if (paidOrderCount >= 100)
+                return "Diamond";
+            if (paidOrderCount >= 60)
+                return "Gold";
+            if (paidOrderCount >= 30)
+                return "Silver";
+            return "Regular";
+        }
+
+        private static string GetTierLabel(string tier) => tier switch
+        {
+            "Diamond" => "Kim cương",
+            "Gold" => "Vàng",
+            "Silver" => "Bạc",
+            _ => "Thành viên thường"
+        };
+
+        private static decimal GetDiscountPercent(string tier) => tier switch
+        {
+            "Diamond" => 20m,
+            "Gold" => 10m,
+            "Silver" => 5m,
+            _ => 0m
+        };
 
 
 

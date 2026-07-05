@@ -20,7 +20,7 @@ namespace Nhom3.Api.User
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, SalesStaff")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUsers()
         {
             try

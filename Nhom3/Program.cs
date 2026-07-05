@@ -29,12 +29,12 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy.WithOrigins(
-                "http://192.168.31.118:5173",
-                "http://localhost:5173",
-                "http://127.0.0.1:5173",
-                "http://localhost:4173",
-                "http://127.0.0.1:4173",
-                "https://front-end-sales-and-inventory-management.onrender.com")
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:4173",
+            "http://127.0.0.1:4173",
+            "https://front-end-sales-and-inventory-management.onrender.com",
+            "https://smartsale.io.vn")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

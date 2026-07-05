@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\VoMinhQuan\\nhom3_sales-and-inventory-management\\Nhom3\\Nhom3.csproj": {}
+    "/Users/vominhquan/Documents/nhom3_sales-and-inventory-management/Nhom3/Nhom3.csproj": {}
   },
   "projects": {
-    "D:\\VoMinhQuan\\nhom3_sales-and-inventory-management\\Nhom3\\Nhom3.csproj": {
+    "/Users/vominhquan/Documents/nhom3_sales-and-inventory-management/Nhom3/Nhom3.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\VoMinhQuan\\nhom3_sales-and-inventory-management\\Nhom3\\Nhom3.csproj",
+        "projectUniqueName": "/Users/vominhquan/Documents/nhom3_sales-and-inventory-management/Nhom3/Nhom3.csproj",
         "projectName": "Nhom3",
-        "projectPath": "D:\\VoMinhQuan\\nhom3_sales-and-inventory-management\\Nhom3\\Nhom3.csproj",
-        "packagesPath": "C:\\Users\\minhq\\.nuget\\packages\\",
-        "outputPath": "D:\\VoMinhQuan\\nhom3_sales-and-inventory-management\\Nhom3\\obj\\",
+        "projectPath": "/Users/vominhquan/Documents/nhom3_sales-and-inventory-management/Nhom3/Nhom3.csproj",
+        "packagesPath": "/Users/vominhquan/.nuget/packages/",
+        "outputPath": "/Users/vominhquan/Documents/nhom3_sales-and-inventory-management/Nhom3/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\minhq\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/vominhquan/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -93,7 +93,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.422/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/Volumes/Macbook 2014 - Dữ liệu/Users/minhquan/Documents/dotnet-sdk-8.0.422-osx-x64/sdk/8.0.422/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
